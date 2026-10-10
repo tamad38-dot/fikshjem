@@ -14,6 +14,9 @@ const nominatim =
   process.env.FIX_NOMINATIM_URL || "https://nominatim.openstreetmap.org";
 const overpass =
   process.env.FIX_OVERPASS_URL || "https://overpass-api.de/api/interpreter";
+const restaurantProviders = [
+  ...new Set([overpass, process.env.FIX_OVERPASS_FALLBACK_URL].filter(Boolean)),
+];
 const agent =
   process.env.FIX_OSM_USER_AGENT ||
   "FIX-Im-Hungry/1.0 (personal restaurant discovery prototype)";
@@ -122,14 +125,21 @@ async function restaurantQuery(lat, lon, radius) {
     // Keep approximate coordinates in the body, never in the request URL.
     body: `[out:json][timeout:15][maxsize:67108864];nwr["amenity"~"^(restaurant|fast_food|cafe)$"]["name"](around:${radius + 1500},${lat},${lon});out center tags;`,
   };
-  for (let attempt = 0; attempt < 2; attempt++) {
+  // An optional independent provider replaces the retry, keeping the same
+  // two-request maximum. Rate limits stop the chain; never evade Retry-After.
+  const targets =
+    restaurantProviders.length > 1 ? restaurantProviders : [overpass, overpass];
+  for (let attempt = 0; attempt < targets.length; attempt++) {
     try {
-      const data = await jsonRequest(overpass, options, 20000);
+      const data = await jsonRequest(targets[attempt], options, 20000);
       if (!Array.isArray(data.elements) || data.remark)
         throw new Error("provider_unavailable");
       return data;
     } catch (error) {
-      if (attempt === 1 || error.message === "provider_rate_limited")
+      if (
+        attempt === targets.length - 1 ||
+        error.message === "provider_rate_limited"
+      )
         throw error;
       await pause(750);
     }
