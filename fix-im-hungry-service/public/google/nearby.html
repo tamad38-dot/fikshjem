@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="nb">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <title>FIX · Google Maps</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font:
+          15px system-ui,
+          sans-serif;
+        background: #0d202d;
+        color: #f5f3ed;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 16px;
+      }
+      p {
+        line-height: 1.5;
+        color: #a9b6bf;
+      }
+      button,
+      a.action {
+        border: 1px solid #e9bf77;
+        border-radius: 24px;
+        padding: 12px 18px;
+        background: #e9bf77;
+        color: #071722;
+        font: 600 14px system-ui;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+      }
+      button:disabled {
+        opacity: 0.4;
+        cursor: default;
+      }
+      button.secondary {
+        background: transparent;
+        color: #e9bf77;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 16px 0;
+      }
+      #status {
+        padding: 12px;
+        border-radius: 12px;
+        background: #132936;
+      }
+      #distance {
+        color: #e9bf77;
+      }
+      #saved-list {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      gmp-place-search,
+      gmp-place-details {
+        width: 100%;
+        color-scheme: dark;
+        --gmp-mat-color-surface: #132936;
+        --gmp-mat-color-on-surface: #f5f3ed;
+        --gmp-mat-color-primary: #e9bf77;
+      }
+      a {
+        color: #e9bf77;
+      }
+      footer {
+        font-size: 12px;
+        line-height: 1.7;
+        margin-top: 24px;
+      }
+      [hidden] {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <p id="status" role="status"></p>
+    <div id="saved-list"></div>
+    <div id="search"></div>
+    <section id="selected" hidden>
+      <p id="distance"></p>
+      <div class="actions">
+        <a
+          id="directions"
+          class="action"
+          target="_blank"
+          rel="noopener noreferrer"
+        ></a
+        ><button id="favorite" class="secondary"></button>
+      </div>
+      <div id="details"></div>
+    </section>
+    <footer>
+      <a id="terms" target="_blank" rel="noopener noreferrer"></a> ·
+      <a id="privacy" target="_blank" rel="noopener noreferrer"></a>
+    </footer>
+    <script src="./plan.js"></script>
+    <script src="./panel.js"></script>
+  </body>
+</html>
