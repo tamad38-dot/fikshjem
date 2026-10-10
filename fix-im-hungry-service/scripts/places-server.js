@@ -18,6 +18,7 @@ const agent =
   process.env.FIX_OSM_USER_AGENT ||
   "FIX-Im-Hungry/1.0 (personal restaurant discovery prototype)";
 const cache = new Map();
+const providerCooldown = new Map();
 let geoQueue = Promise.resolve(),
   lastGeo = 0,
   active = 0;
@@ -34,6 +35,9 @@ function cached(key, ttl, load) {
   return promise;
 }
 async function jsonRequest(url, options = {}, timeout = 40000) {
+  const provider = new URL(url).origin;
+  if ((providerCooldown.get(provider) || 0) > Date.now())
+    throw new Error("provider_rate_limited");
   const response = await fetch(url, {
     ...options,
     headers: {
@@ -43,6 +47,16 @@ async function jsonRequest(url, options = {}, timeout = 40000) {
     },
     signal: AbortSignal.timeout(timeout),
   });
+  if ([429, 406].includes(response.status)) {
+    const retry = response.headers.get("retry-after");
+    const seconds = Number(retry);
+    const delay =
+      retry && Number.isFinite(seconds)
+        ? seconds * 1000
+        : Date.parse(retry || "") - Date.now();
+    providerCooldown.set(provider, Date.now() + Math.max(30000, delay || 0));
+    throw new Error("provider_rate_limited");
+  }
   if (!response.ok) throw new Error("provider_unavailable");
   return response.json();
 }
@@ -73,7 +87,7 @@ async function restaurantQuery(lat, lon, radius) {
       Accept: "*/*",
     },
     body: new URLSearchParams({
-      data: `[out:json][timeout:15];nwr["amenity"~"^(restaurant|fast_food|cafe)$"]["name"](around:${radius + 1500},${lat},${lon});out center tags;`,
+      data: `[out:json][timeout:15][maxsize:67108864];nwr["amenity"~"^(restaurant|fast_food|cafe)$"]["name"](around:${radius + 1500},${lat},${lon});out center tags;`,
     }).toString(),
   };
   for (let attempt = 0; attempt < 2; attempt++) {
@@ -83,7 +97,8 @@ async function restaurantQuery(lat, lon, radius) {
         throw new Error("provider_unavailable");
       return data;
     } catch (error) {
-      if (attempt === 1) throw error;
+      if (attempt === 1 || error.message === "provider_rate_limited")
+        throw error;
       await pause(750);
     }
   }
