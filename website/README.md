@@ -8,7 +8,7 @@ Buildless Norwegian Bokmål website in `dist/`. Serve this directory with any st
 python3 -m http.server 58970 --directory dist --bind 127.0.0.1
 ```
 
-- Four pages: company home, Fiks Hjem, support, privacy.
+- Five pages: company home, Fiks Hjem, Fix I’m Hungry, support, privacy.
 - Responsive navigation, accessible dialogs, project category selector and client-side material estimator with validation/copy.
 - No analytics, tracking pixels, third-party scripts, remote fonts, accounts or data-submission backend.
 - App store downloads are not enabled: the app has not launched.
@@ -18,3 +18,5 @@ python3 -m http.server 58970 --directory dist --bind 127.0.0.1
 The privacy page describes the current Fiks Hjem test code, including optional external AI, weather and map requests. Final app data labels and policies need review before App Store release.
 
 This website is separate from the mobile app. Deploying it does not publish an iOS or Android app.
+
+Fix I’m Hungry (`hungry/`) is an interactive concept demo with fictional venues, local search/cuisine/price/city filters, a schematic map and browser-local favorite IDs. No location, reservations, live ratings or external restaurant API is used. Favorites can be cleared from the page. App availability is clearly marked as not launched.
