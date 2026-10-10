@@ -62,7 +62,35 @@ async function jsonRequest(url, options = {}, timeout = 40000) {
     error.status = response.status;
     throw error;
   }
-  return response.json();
+  try {
+    return await response.json();
+  } catch {
+    throw new Error("provider_invalid_json");
+  }
+}
+function providerFailure(error) {
+  if (
+    [
+      "provider_rate_limited",
+      "provider_invalid_json",
+      "provider_unavailable",
+    ].includes(error?.message)
+  )
+    return error.message;
+  const code =
+    error?.cause?.code || error?.cause?.errors?.[0]?.code || error?.code;
+  return [
+    "ENOTFOUND",
+    "EAI_AGAIN",
+    "ENETUNREACH",
+    "ECONNREFUSED",
+    "ETIMEDOUT",
+    "CERT_HAS_EXPIRED",
+    "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+    "UND_ERR_CONNECT_TIMEOUT",
+  ].includes(code)
+    ? code
+    : "provider_network";
 }
 function geocode(lat, lon, locale) {
   return cached(`geo:${lat}:${lon}:${locale}`, 3600000, () => {
@@ -153,6 +181,8 @@ async function nearby(body) {
       places.status === "rejected" && Number.isInteger(places.reason?.status)
         ? places.reason.status
         : null,
+    placesErrorReason:
+      places.status === "rejected" ? providerFailure(places.reason) : null,
   };
 }
 function send(res, code, data) {
