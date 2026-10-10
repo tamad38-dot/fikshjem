@@ -57,7 +57,11 @@ async function jsonRequest(url, options = {}, timeout = 40000) {
     providerCooldown.set(provider, Date.now() + Math.max(30000, delay || 0));
     throw new Error("provider_rate_limited");
   }
-  if (!response.ok) throw new Error("provider_unavailable");
+  if (!response.ok) {
+    const error = new Error("provider_unavailable");
+    error.status = response.status;
+    throw error;
+  }
   return response.json();
 }
 function geocode(lat, lon, locale) {
@@ -145,6 +149,10 @@ async function nearby(body) {
     places: places.status === "fulfilled" ? places.value : null,
     cityError: location.status === "rejected",
     placesError: places.status === "rejected",
+    placesErrorStatus:
+      places.status === "rejected" && Number.isInteger(places.reason?.status)
+        ? places.reason.status
+        : null,
   };
 }
 function send(res, code, data) {
