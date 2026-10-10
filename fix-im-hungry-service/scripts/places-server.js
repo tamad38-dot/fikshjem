@@ -115,12 +115,12 @@ async function restaurantQuery(lat, lon, radius) {
   const options = {
     method: "POST",
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Accept: "*/*",
+      "Content-Type": "text/plain; charset=utf-8",
     },
-    body: new URLSearchParams({
-      data: `[out:json][timeout:15][maxsize:67108864];nwr["amenity"~"^(restaurant|fast_food|cafe)$"]["name"](around:${radius + 1500},${lat},${lon});out center tags;`,
-    }).toString(),
+    // Overpass accepts a verbatim query as POST payload. The pilot provider's
+    // form-encoded POST path returned HTTP 500 even for otherwise valid queries.
+    // Keep approximate coordinates in the body, never in the request URL.
+    body: `[out:json][timeout:15][maxsize:67108864];nwr["amenity"~"^(restaurant|fast_food|cafe)$"]["name"](around:${radius + 1500},${lat},${lon});out center tags;`,
   };
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
