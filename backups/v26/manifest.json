@@ -1,0 +1,13 @@
+{
+  "version": "26.0.0",
+  "received": "2026-10-10",
+  "archive": "fiks-hjem-v26.zip",
+  "bytes": 7100221,
+  "files": 151,
+  "sha256": "b9feab9b400d52107bbf30c26cfed9dcb61624f96c6f6bc5cc1639bc7d9389b1",
+  "git_blob_sha1": "e3a9e407ac23ff573a6e0faf1c2e47c2fcff3bd6",
+  "archive_crc": "passed",
+  "source_changes": "none",
+  "build_and_real_device_tests": "not run for this backup",
+  "secret_pattern_scan": "No matches for the checked private-key, service-token and credential-file patterns; this is not a guarantee of absence."
+}
