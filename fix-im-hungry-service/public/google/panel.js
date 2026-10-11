@@ -85,7 +85,7 @@
     const request = new widgets.PlaceTextSearchRequestElement({
       textQuery: input.query,
       locationRestriction: input.bounds,
-      includedType: "restaurant",
+      includedType: input.placeType || "restaurant",
       useStrictTypeFiltering: input.cuisine !== "pastry",
       isOpenNow: input.openOnly,
       maxResultCount: 5,

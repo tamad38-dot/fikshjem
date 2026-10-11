@@ -54,6 +54,8 @@
     return [...new Set(prefs.liked || [])].filter(
       (id) =>
         foods[id] &&
+        (!prefs.venues ||
+          prefs.venues.includes(id === "coffee" ? "cafe" : "restaurant")) &&
         !(prefs.excluded || []).includes(id) &&
         (!prefs.category || prefs.category === "all" || prefs.category === id),
     );
@@ -70,10 +72,30 @@
       latitudeSpan / Math.max(0.01, Math.cos((latitude * Math.PI) / 180)),
     );
     const wrap = (x) => ((x + 540) % 360) - 180;
+    const dietTerms = {
+      vegan: "vegan",
+      vegetarian: "vegetarian",
+      halal: "halal",
+      gluten_free: "gluten free",
+      lactose_free: "lactose free",
+    };
     return {
       cuisine,
+      placeType:
+        cuisine === "coffee"
+          ? "cafe"
+          : cuisine === "pastry"
+            ? "bakery"
+            : cuisine === "icecream"
+              ? "ice_cream_shop"
+              : "restaurant",
       locale: prefs.locale || "nb",
-      query: `${foods[cuisine]} ${(prefs.query || "").slice(0, 80)}`.trim(),
+      query: `${foods[cuisine]} ${(prefs.diets || [])
+        .map((id) => dietTerms[id])
+        .filter(Boolean)
+        .join(" ")} ${(prefs.query || "").slice(0, 80)}`
+        .replace(/\s+/g, " ")
+        .trim(),
       latitude,
       longitude,
       radius: metres,
