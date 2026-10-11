@@ -255,6 +255,8 @@ const server = http.createServer(async (req, res) => {
       new URL(req.url, "http://localhost").pathname,
     );
     const googleFiles = {
+      "/legal/terms.html": path.resolve(__dirname, "../public/legal/terms.html"),
+      "/legal/privacy.html": path.resolve(__dirname, "../public/legal/privacy.html"),
       "/google/nearby.html": path.resolve(
         __dirname,
         "../public/google/nearby.html",
