@@ -34,18 +34,22 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(204);
     return res.end();
   }
-  if (req.url === "/api/google-config" && req.method === "GET")
+  let pathname;
+  try {
+    // Route by path: React Native adds ?_=timestamp to cache:no-store requests.
+    pathname = decodeURIComponent(new URL(req.url, "http://localhost").pathname);
+  } catch {
+    return send(res, 400, { error: "invalid_url" });
+  }
+  if (pathname === "/api/google-config" && req.method === "GET")
     return send(res, 200, publicConfig());
-  if (req.url === "/api/nearby")
+  if (pathname === "/api/nearby")
     return send(res, 410, { error: "google_only", provider: "Google Maps" });
-  if (req.url === "/api/health")
+  if (pathname === "/api/health")
     return send(res, 200, { ok: true, provider: "Google Maps" });
   if (req.method !== "GET" && req.method !== "HEAD")
     return send(res, 405, { error: "method" });
   try {
-    const pathname = decodeURIComponent(
-      new URL(req.url, "http://localhost").pathname,
-    );
     const googleFiles = {
       "/legal/terms.html": path.resolve(
         __dirname,
@@ -91,7 +95,7 @@ if (require.main === module) {
   server.listen(port, process.env.FIX_BIND || "127.0.0.1", () =>
     console.log(`FIX preview + Google service ready on port ${port}`),
   );
-  // Optional alias shares the same in-memory cache and global geocoding limiter.
+  // Optional alias serves the same Google panel and static preview routes.
   const companion = Number(process.env.FIX_COMPANION_PORT || 0);
   if (companion && companion !== port) {
     const alias = http.createServer(server.listeners("request")[0]);
