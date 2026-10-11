@@ -4,6 +4,7 @@
   const core = window.FixGooglePlan;
   const element = (id) => document.getElementById(id);
   let input,
+    detailsOpen = false,
     chosen = null,
     saved = [],
     view = "discover",
@@ -30,13 +31,18 @@
     );
     send({ type: "fix-google-error" });
   }
+  function visibility() {
+    element("search").hidden = view === "saved" || detailsOpen;
+    element("saved-list").hidden = detailsOpen;
+    element("selected").hidden = !detailsOpen;
+  }
   function favorites() {
     element("saved-list").replaceChildren();
     if (view !== "saved") return;
     const ids = saved.filter(core.validSavedId);
     status(ids.length ? input.labels.favorites : input.labels.emptySaved);
     if (chosen && !ids.includes(`google:${chosen.id}`)) {
-      element("selected").hidden = true;
+      detailsOpen = false;
       chosen = null;
     }
     ids.forEach((id, index) => {
@@ -55,9 +61,9 @@
   function setView(next) {
     const changed = view !== next;
     view = next;
-    element("search").hidden = view === "saved";
-    if (changed) element("selected").hidden = true;
+    if (changed) detailsOpen = false;
     favorites();
+    visibility();
     if (view !== "saved" && !searchElement) showSearch();
     else if (view !== "saved") status(searchStatus || input.labels.loading);
   }
@@ -80,13 +86,14 @@
   }
   function showDetails(id) {
     if (!core.validSavedId(`google:${id}`)) return;
+    detailsOpen = true;
+    visibility();
+    send({ type: "fix-google-focus" });
     if (chosen?.id === id && detailsElement?.place?.id === id) {
-      element("selected").hidden = false;
       updateFavorite();
       return;
     }
     chosen = null;
-    element("selected").hidden = false;
     element("directions").hidden = true;
     element("favorite").disabled = true;
     clearTimeout(detailsTimer);
@@ -146,6 +153,14 @@
     document.documentElement.lang = input.locale;
     saved = input.saved || [];
     view = input.view || "discover";
+    element("back").textContent =
+      input.labels.back ||
+      (input.locale === "nb" ? "Tilbake til listen" : "Back to list");
+    element("back").addEventListener("click", () => {
+      detailsOpen = false;
+      setView(view);
+      send({ type: "fix-google-focus" });
+    });
     status(input.labels.loading);
     const controller = new AbortController();
     const configTimer = setTimeout(() => controller.abort(), 90000);

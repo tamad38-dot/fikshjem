@@ -21,6 +21,11 @@
         margin: 0;
         padding: 16px;
       }
+      @media (max-width: 600px) {
+        body {
+          padding: 8px 4px;
+        }
+      }
       p {
         line-height: 1.5;
         color: #a9b6bf;
@@ -91,6 +96,7 @@
     <div id="saved-list"></div>
     <div id="search"></div>
     <section id="selected" hidden>
+      <button id="back" class="secondary"></button>
       <p id="distance"></p>
       <div class="actions">
         <a
