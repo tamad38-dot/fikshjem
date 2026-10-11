@@ -11,20 +11,34 @@
     searchElement,
     detailsRequest,
     detailsElement,
-    searchStatus;
+    searchStatus,
+    searchTimer,
+    detailsTimer;
   function status(value) {
     element("status").textContent = value;
   }
   function send(data) {
     if (window.ReactNativeWebView)
       window.ReactNativeWebView.postMessage(JSON.stringify(data));
-    else if (parent !== window) parent.postMessage(data, input.parentOrigin);
+    else if (parent !== window && input?.parentOrigin)
+      parent.postMessage(data, input.parentOrigin);
+  }
+  function failed() {
+    status(
+      input?.labels?.error ||
+        "Google Maps · Connection unavailable / Tilkobling utilgjengelig",
+    );
+    send({ type: "fix-google-error" });
   }
   function favorites() {
     element("saved-list").replaceChildren();
     if (view !== "saved") return;
     const ids = saved.filter(core.validSavedId);
-    if (!ids.length) status(input.labels.emptySaved);
+    status(ids.length ? input.labels.favorites : input.labels.emptySaved);
+    if (chosen && !ids.includes(`google:${chosen.id}`)) {
+      element("selected").hidden = true;
+      chosen = null;
+    }
     ids.forEach((id, index) => {
       const button = document.createElement("button");
       button.className = "secondary";
@@ -75,10 +89,15 @@
     element("selected").hidden = false;
     element("directions").hidden = true;
     element("favorite").disabled = true;
+    clearTimeout(detailsTimer);
+    detailsTimer = setTimeout(failed, 30000);
     detailsRequest.place = id;
   }
   function showSearch() {
+    if (!input.query) return;
     status(input.labels.loading);
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(failed, 30000);
     searchElement = new widgets.PlaceSearchElement();
     searchElement.setAttribute("selectable", "");
     const content = document.createElement("gmp-place-all-content");
@@ -93,14 +112,17 @@
       rankPreference: "DISTANCE",
     });
     searchElement.addEventListener("gmp-load", () => {
+      clearTimeout(searchTimer);
       searchStatus = searchElement.places?.length
         ? input.labels.results
         : input.labels.noResults;
       if (view !== "saved") status(searchStatus);
+      send({ type: "fix-google-loaded" });
     });
     searchElement.addEventListener("gmp-error", () => {
+      clearTimeout(searchTimer);
       searchStatus = input.labels.error;
-      if (view !== "saved") status(searchStatus);
+      if (view !== "saved") failed();
     });
     searchElement.addEventListener("gmp-select", (event) =>
       showDetails(event.place?.id),
@@ -125,7 +147,17 @@
     saved = input.saved || [];
     view = input.view || "discover";
     status(input.labels.loading);
-    const response = await fetch("../api/google-config", { cache: "no-store" });
+    const controller = new AbortController();
+    const configTimer = setTimeout(() => controller.abort(), 90000);
+    let response;
+    try {
+      response = await fetch("../api/google-config", {
+        cache: "no-store",
+        signal: controller.signal,
+      });
+    } finally {
+      clearTimeout(configTimer);
+    }
     // Relative ../api resolves /api from /google/nearby.html.
     if (!response.ok) throw Error("setup");
     const config = await response.json();
@@ -137,7 +169,7 @@
     element("terms").textContent = input.labels.terms;
     element("privacy").href = config.privacyUrl;
     element("privacy").textContent = input.labels.privacy;
-    window.gm_authFailure = () => status(input.labels.error);
+    window.gm_authFailure = failed;
     await new Promise((resolve, reject) => {
       const script = document.createElement("script");
       const params = new URLSearchParams({
@@ -187,11 +219,16 @@
       document.createElement("gmp-place-all-content"),
     );
     details.addEventListener("gmp-load", () => {
+      clearTimeout(detailsTimer);
       selected(details.place);
       element("favorite").disabled = !chosen;
       element("directions").hidden = !chosen;
+      send({ type: "fix-google-loaded" });
     });
-    details.addEventListener("gmp-error", () => status(input.labels.error));
+    details.addEventListener("gmp-error", () => {
+      clearTimeout(detailsTimer);
+      failed();
+    });
     element("details").append(details);
     element("favorite").addEventListener("click", () => {
       if (chosen) send({ ...chosen, type: "fix-google-favorite" });
@@ -235,9 +272,6 @@
       observer.observe(document.body);
     }
   } catch {
-    status(
-      input?.labels?.error ||
-        "Google Maps · Connection unavailable / Tilkobling utilgjengelig",
-    );
+    failed();
   }
 })();

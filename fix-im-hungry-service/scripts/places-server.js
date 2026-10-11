@@ -18,8 +18,14 @@ function send(res, code, data) {
 }
 const server = http.createServer(async (req, res) => {
   const origin = req.headers.origin;
+  // Render's canonical HTTPS origin is also the origin of the hosted WKWebView.
+  // Keep exact comparisons: an arbitrary remote origin must remain denied.
+  const ownOrigin = process.env.RENDER_EXTERNAL_URL
+    ? new URL(process.env.RENDER_EXTERNAL_URL).origin
+    : `http://${req.headers.host}`;
   const permitted =
     !origin ||
+    origin === ownOrigin ||
     /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) ||
     (process.env.FIX_ALLOWED_ORIGIN &&
       origin === process.env.FIX_ALLOWED_ORIGIN);
@@ -37,7 +43,9 @@ const server = http.createServer(async (req, res) => {
   let pathname;
   try {
     // Route by path: React Native adds ?_=timestamp to cache:no-store requests.
-    pathname = decodeURIComponent(new URL(req.url, "http://localhost").pathname);
+    pathname = decodeURIComponent(
+      new URL(req.url, "http://localhost").pathname,
+    );
   } catch {
     return send(res, 400, { error: "invalid_url" });
   }
