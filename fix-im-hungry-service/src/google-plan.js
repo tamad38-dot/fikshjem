@@ -43,6 +43,16 @@
     french: "french restaurant",
     spanish: "spanish restaurant",
     american: "american restaurant",
+    dessert: "dessert shop",
+    cake: "cake shop",
+    waffle: "waffle dessert",
+    crepe: "crepe cafe",
+    donut: "donut shop",
+    chocolate: "chocolate shop",
+    baklava: "baklava dessert",
+    tea: "tea house",
+    juice: "juice smoothie shop",
+    cafeteria: "cafeteria",
   };
   const point = (p) =>
     p &&
@@ -50,12 +60,44 @@
     Number.isFinite(p.longitude) &&
     Math.abs(p.latitude) <= 90 &&
     Math.abs(p.longitude) <= 180;
+  const venueGroups = {
+    coffee: ["cafe"],
+    tea: ["cafe"],
+    juice: ["cafe"],
+    cafeteria: ["cafeteria", "restaurant"],
+    pastry: ["bakery", "dessert", "cafe", "restaurant"],
+    cake: ["bakery", "dessert", "cafe", "restaurant"],
+    icecream: ["dessert", "cafe", "restaurant"],
+    dessert: ["dessert", "cafe", "restaurant"],
+    waffle: ["dessert", "cafe", "restaurant"],
+    crepe: ["dessert", "cafe", "restaurant"],
+    donut: ["bakery", "dessert", "cafe", "restaurant"],
+    chocolate: ["dessert", "cafe", "restaurant"],
+    baklava: ["bakery", "dessert", "cafe", "restaurant"],
+  };
+  const placeTypes = {
+    coffee: "cafe",
+    pastry: "bakery",
+    icecream: "ice_cream_shop",
+    dessert: "dessert_shop",
+    cake: "bakery",
+    waffle: "dessert_shop",
+    crepe: "dessert_shop",
+    donut: "donut_shop",
+    chocolate: "chocolate_shop",
+    baklava: "dessert_shop",
+    tea: "tea_house",
+    juice: "juice_shop",
+    cafeteria: "cafeteria",
+  };
   function choices(prefs) {
     return [...new Set(prefs.liked || [])].filter(
       (id) =>
         foods[id] &&
         (!prefs.venues ||
-          prefs.venues.includes(id === "coffee" ? "cafe" : "restaurant")) &&
+          (venueGroups[id] || ["restaurant"]).some((venue) =>
+            prefs.venues.includes(venue),
+          )) &&
         !(prefs.excluded || []).includes(id) &&
         (!prefs.category || prefs.category === "all" || prefs.category === id),
     );
@@ -81,14 +123,7 @@
     };
     return {
       cuisine,
-      placeType:
-        cuisine === "coffee"
-          ? "cafe"
-          : cuisine === "pastry"
-            ? "bakery"
-            : cuisine === "icecream"
-              ? "ice_cream_shop"
-              : "restaurant",
+      placeType: placeTypes[cuisine] || "restaurant",
       locale: prefs.locale || "nb",
       query: `${foods[cuisine]} ${(prefs.diets || [])
         .map((id) => dietTerms[id])

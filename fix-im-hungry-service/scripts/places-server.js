@@ -123,7 +123,7 @@ async function restaurantQuery(lat, lon, radius) {
     // Overpass accepts a verbatim query as POST payload. The pilot provider's
     // form-encoded POST path returned HTTP 500 even for otherwise valid queries.
     // Keep approximate coordinates in the body, never in the request URL.
-    body: `[out:json][timeout:15][maxsize:67108864];nwr["amenity"~"^(restaurant|fast_food|cafe)$"]["name"](around:${radius + 1500},${lat},${lon});out center tags;`,
+    body: `[out:json][timeout:15][maxsize:67108864];(nwr["amenity"~"^(restaurant|fast_food|cafe|ice_cream)$"]["name"](around:${radius + 1500},${lat},${lon});nwr["shop"~"^(bakery|pastry|confectionery|chocolate|ice_cream)$"]["name"](around:${radius + 1500},${lat},${lon}););out center tags;`,
   };
   // An optional independent provider replaces the retry, keeping the same
   // two-request maximum. Rate limits stop the chain; never evade Retry-After.
@@ -255,8 +255,14 @@ const server = http.createServer(async (req, res) => {
       new URL(req.url, "http://localhost").pathname,
     );
     const googleFiles = {
-      "/legal/terms.html": path.resolve(__dirname, "../public/legal/terms.html"),
-      "/legal/privacy.html": path.resolve(__dirname, "../public/legal/privacy.html"),
+      "/legal/terms.html": path.resolve(
+        __dirname,
+        "../public/legal/terms.html",
+      ),
+      "/legal/privacy.html": path.resolve(
+        __dirname,
+        "../public/legal/privacy.html",
+      ),
       "/google/nearby.html": path.resolve(
         __dirname,
         "../public/google/nearby.html",
