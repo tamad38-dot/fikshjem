@@ -160,6 +160,24 @@
       script.src = `https://maps.googleapis.com/maps/api/js?${params}`;
       document.head.append(script);
     });
+    if (input.lookupCity) {
+      (async () => {
+        try {
+          const { Geocoder } = await google.maps.importLibrary("geocoding");
+          const result = await new Geocoder().geocode({
+            location: { lat: input.latitude, lng: input.longitude },
+          });
+          const city = core.cityFromResults(result.results);
+          if (city) {
+            element("city").textContent = `${city.city}, ${city.country}`;
+            element("city").hidden = false;
+            send({ ...city, type: "fix-google-city" });
+          }
+        } catch {
+          send({ type: "fix-google-city-error" });
+        }
+      })();
+    }
     widgets = await google.maps.importLibrary("places");
     const details = new widgets.PlaceDetailsElement();
     detailsElement = details;
@@ -206,6 +224,16 @@
     });
     setView(view);
     send({ type: "fix-google-ready" });
+    // Measure the component host; do not inspect Google's protected shadow content.
+    if (window.ResizeObserver) {
+      const observer = new ResizeObserver(() =>
+        send({
+          type: "fix-google-height",
+          height: Math.ceil(document.body.getBoundingClientRect().height),
+        }),
+      );
+      observer.observe(document.body);
+    }
   } catch {
     status(
       input?.labels?.error ||

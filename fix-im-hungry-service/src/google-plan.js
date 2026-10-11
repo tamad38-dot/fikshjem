@@ -151,6 +151,45 @@
       saved: (prefs.saved || []).filter(validSavedId).slice(0, 100),
     };
   }
+  function searchKey(query) {
+    if (!query) return "";
+    const { saved, ...search } = query;
+    return JSON.stringify(search);
+  }
+  function cityFromResults(results) {
+    const components = (Array.isArray(results) ? results : []).flatMap(
+      (r) => r.address_components || [],
+    );
+    const find = (type) => components.find((c) => c.types?.includes(type));
+    const city =
+      find("locality") ||
+      find("postal_town") ||
+      find("administrative_area_level_2");
+    const country = find("country");
+    return cityMessage({
+      type: "fix-google-city",
+      city: city?.long_name,
+      country: country?.long_name,
+      countryCode: country?.short_name,
+    });
+  }
+  function cityMessage(data) {
+    if (
+      data?.type !== "fix-google-city" ||
+      typeof data.city !== "string" ||
+      !data.city.trim() ||
+      data.city.length > 160 ||
+      typeof data.country !== "string" ||
+      data.country.length > 160 ||
+      !/^[A-Z]{2}$/.test(data.countryCode)
+    )
+      return null;
+    return {
+      city: data.city,
+      country: data.country,
+      countryCode: data.countryCode,
+    };
+  }
   function validSavedId(id) {
     return typeof id === "string" && /^google:[A-Za-z0-9_-]{1,250}$/.test(id);
   }
@@ -185,5 +224,15 @@
     // Let Google Maps acquire the starting location after the user opens it.
     return `https://www.google.com/maps/dir/?api=1&destination=${p.latitude},${p.longitude}&destination_place_id=${encodeURIComponent(id)}&travelmode=${mode === "walking" ? "walking" : "driving"}`;
   }
-  return { choices, plan, selection, distanceKm, directions, validSavedId };
+  return {
+    choices,
+    plan,
+    searchKey,
+    cityFromResults,
+    cityMessage,
+    selection,
+    distanceKm,
+    directions,
+    validSavedId,
+  };
 });

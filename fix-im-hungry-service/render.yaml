@@ -17,7 +17,3 @@ services:
         value: "0"
       - key: FIX_GOOGLE_ENABLED
         value: "false"
-      - key: FIX_OVERPASS_URL
-        value: https://overpass.private.coffee/api/interpreter
-      - key: FIX_OSM_USER_AGENT
-        value: FIX-Im-Hungry/1.0 (+https://github.com/tamad38-dot/fikshjem)
