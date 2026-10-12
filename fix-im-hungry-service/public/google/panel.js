@@ -116,10 +116,7 @@
       const widget = new widgets.PlaceDetailsElement();
       const request = new widgets.PlaceDetailsPlaceRequestElement();
       request.place = id;
-      const content = document.createElement("gmp-place-content-config");
-      ["media", "address", "rating", "type", "price", "opening-hours"].forEach(
-        (name) => content.append(document.createElement(`gmp-place-${name}`)),
-      );
+      const content = document.createElement("gmp-place-all-content");
       widget.append(request, content);
       const notice = document.createElement("p");
       notice.textContent = input.labels.loading;
