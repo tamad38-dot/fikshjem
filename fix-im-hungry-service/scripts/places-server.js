@@ -8,6 +8,8 @@ try {
   if (error.code !== "ENOENT") throw new Error("FIX .env could not be loaded");
 }
 const { publicConfig } = require("./google-config.js");
+const { accountConfig } = require("./account-config.js");
+const foodLabels = require("../public/business/foods.json");
 const root = path.resolve(__dirname, "../dist");
 function send(res, code, data) {
   res.writeHead(code, {
@@ -49,6 +51,14 @@ const server = http.createServer(async (req, res) => {
   } catch {
     return send(res, 400, { error: "invalid_url" });
   }
+  if (pathname === "/api/account-config" && req.method === "GET") {
+    const config = accountConfig();
+    const lang = new URL(req.url, "http://localhost").searchParams.get("lang");
+    return send(res, 200, {
+      ...config,
+      ...(config.enabled ? { foods: foodLabels[lang] || foodLabels.en } : {}),
+    });
+  }
   if (pathname === "/api/google-config" && req.method === "GET")
     return send(res, 200, publicConfig());
   if (pathname === "/api/nearby")
@@ -59,6 +69,22 @@ const server = http.createServer(async (req, res) => {
     return send(res, 405, { error: "method" });
   try {
     const googleFiles = {
+      "/business/account.html": path.resolve(
+        __dirname,
+        "../public/business/account.html",
+      ),
+      "/business/account.js": path.resolve(
+        __dirname,
+        "../public/business/account.js",
+      ),
+      "/business/account.css": path.resolve(
+        __dirname,
+        "../public/business/account.css",
+      ),
+      "/business/model.js": path.resolve(
+        __dirname,
+        "../public/business/model.js",
+      ),
       "/legal/terms.html": path.resolve(
         __dirname,
         "../public/legal/terms.html",
@@ -82,6 +108,7 @@ const server = http.createServer(async (req, res) => {
     const bytes = await fs.readFile(file);
     const types = {
       ".html": "text/html; charset=utf-8",
+      ".css": "text/css; charset=utf-8",
       ".js": "text/javascript; charset=utf-8",
       ".json": "application/json",
       ".png": "image/png",
@@ -89,6 +116,13 @@ const server = http.createServer(async (req, res) => {
       ".ttf": "font/ttf",
       ".svg": "image/svg+xml",
     };
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("Referrer-Policy", "no-referrer");
+    if (pathname.startsWith("/business/"))
+      res.setHeader(
+        "Content-Security-Policy",
+        "default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self' https://*.supabase.co; img-src 'self' blob: https://*.supabase.co; form-action 'none'; base-uri 'none'; frame-ancestors 'self'",
+      );
     res.writeHead(200, {
       "Content-Type": types[path.extname(file)] || "application/octet-stream",
       "Cache-Control": "no-cache",
