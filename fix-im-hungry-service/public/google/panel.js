@@ -13,6 +13,7 @@
     detailsRequest,
     detailsElement,
     searchStatus,
+    resultCards = [],
     searchTimer,
     detailsTimer;
   function status(value) {
@@ -32,7 +33,9 @@
     send({ type: "fix-google-error" });
   }
   function visibility() {
-    element("search").hidden = view === "saved" || detailsOpen;
+    element("search").hidden =
+      view === "saved" || detailsOpen || resultCards.length > 0;
+    element("cards").hidden = view === "saved" || detailsOpen;
     element("saved-list").hidden = detailsOpen;
     element("selected").hidden = !detailsOpen;
   }
@@ -100,6 +103,62 @@
     detailsTimer = setTimeout(failed, 30000);
     detailsRequest.place = id;
   }
+  function renderCards() {
+    // Use only the IDs returned by this search. Google owns each photo gallery,
+    // rating and attribution; no restaurant facts or images are copied into FIX.
+    const ids = [...new Set((searchElement.places || []).map((p) => p.id))]
+      .filter((id) => core.validSavedId(`google:${id}`))
+      .slice(0, 5);
+    if (ids.join("|") === resultCards.map((c) => c.id).join("|")) return;
+    resultCards = ids.map((id) => {
+      const wrapper = document.createElement("article");
+      wrapper.className = "place-card";
+      const widget = new widgets.PlaceDetailsElement();
+      const request = new widgets.PlaceDetailsPlaceRequestElement();
+      request.place = id;
+      const content = document.createElement("gmp-place-content-config");
+      ["media", "address", "rating", "type", "price", "opening-hours"].forEach(
+        (name) => content.append(document.createElement(`gmp-place-${name}`)),
+      );
+      widget.append(request, content);
+      const notice = document.createElement("p");
+      notice.textContent = input.labels.loading;
+      notice.setAttribute("role", "status");
+      const open = document.createElement("button");
+      open.className = "secondary";
+      open.textContent =
+        input.labels.openPlace ||
+        {
+          nb: "Detaljer, anmeldelser og veibeskrivelse",
+          tr: "Detaylar, yorumlar ve yol tarifi",
+          de: "Details, Bewertungen und Route",
+          sv: "Detaljer, omdömen och vägbeskrivning",
+          da: "Detaljer, anmeldelser og rute",
+          fr: "Détails, avis et itinéraire",
+          es: "Detalles, reseñas e indicaciones",
+          it: "Dettagli, recensioni e indicazioni",
+          nl: "Details, recensies en route",
+        }[input.locale] ||
+        "Details, reviews and directions";
+      open.addEventListener("click", () => showDetails(id));
+      let timer = setTimeout(() => {
+        notice.textContent = input.labels.error;
+      }, 30000);
+      widget.addEventListener("gmp-load", () => {
+        clearTimeout(timer);
+        notice.hidden = true;
+      });
+      widget.addEventListener("gmp-error", () => {
+        clearTimeout(timer);
+        notice.hidden = false;
+        notice.textContent = input.labels.error;
+      });
+      wrapper.append(notice, widget, open);
+      return { id, wrapper };
+    });
+    element("cards").replaceChildren(...resultCards.map((c) => c.wrapper));
+    visibility();
+  }
   function showSearch() {
     if (!input.query) return;
     status(input.labels.loading);
@@ -120,6 +179,7 @@
     });
     searchElement.addEventListener("gmp-load", () => {
       clearTimeout(searchTimer);
+      renderCards();
       searchStatus = searchElement.places?.length
         ? input.labels.results
         : input.labels.noResults;

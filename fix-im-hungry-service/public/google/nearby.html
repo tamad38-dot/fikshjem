@@ -64,6 +64,17 @@
       #distance {
         color: #e9bf77;
       }
+      #cards {
+        display: grid;
+        gap: 24px;
+      }
+      .place-card {
+        min-width: 0;
+      }
+      .place-card > button {
+        margin-top: 12px;
+        width: 100%;
+      }
       #saved-list {
         display: flex;
         gap: 8px;
@@ -95,6 +106,7 @@
     <p id="status" role="status"></p>
     <div id="saved-list"></div>
     <div id="search"></div>
+    <div id="cards"></div>
     <section id="selected" hidden>
       <button id="back" class="secondary"></button>
       <p id="distance"></p>
