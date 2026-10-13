@@ -71,7 +71,8 @@
             glyphColor: "#071722",
           }),
         });
-        marker.addEventListener("gmp-click", () => onSelect(p.id));
+        // The DOM gmp-click event is beta-only; this app loads the weekly SDK.
+        marker.addListener("click", () => onSelect(p.id));
         bounds.extend(p.location);
         return marker;
       });
