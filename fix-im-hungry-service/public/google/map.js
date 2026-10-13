@@ -4,7 +4,14 @@
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.FixGoogleMap = api;
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
-  async function create({ host, google, center, title, onSelect }) {
+  async function create({
+    host,
+    google,
+    center,
+    title,
+    onSelect,
+    placeTitle = "Place",
+  }) {
     let timer;
     const [{ Map }, { AdvancedMarkerElement, PinElement }, { LatLngBounds }] =
       await Promise.race([
@@ -52,11 +59,11 @@
       });
       const bounds = new LatLngBounds();
       bounds.extend(center);
-      markers = items.map((p) => {
+      markers = items.map((p, index) => {
         const marker = new AdvancedMarkerElement({
           map,
           position: p.location,
-          title: p.displayName || "",
+          title: p.displayName || `${placeTitle} ${index + 1}`,
           gmpClickable: true,
           content: new PinElement({
             background: "#e9bf77",

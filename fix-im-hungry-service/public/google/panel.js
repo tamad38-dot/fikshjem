@@ -82,6 +82,7 @@
     const labels = {
       nb: {
         position: "Din omtrentlige posisjon",
+        place: "Spisested",
         hint: "Trykk på en markør for bilder og detaljer. Posisjonen på kartet er omtrentlig.",
         retry: "Prøv kartet igjen",
         error:
@@ -89,6 +90,7 @@
       },
       tr: {
         position: "Yaklaşık konumun",
+        place: "İşletme",
         hint: "Fotoğraf ve detaylar için bir işarete dokun. Haritadaki konum yaklaşık gösterilir.",
         retry: "Haritayı yeniden dene",
         error:
@@ -96,6 +98,7 @@
       },
       en: {
         position: "Your approximate location",
+        place: "Place",
         hint: "Tap a marker for photos and details. Your location on the map is approximate.",
         retry: "Retry map",
         error:
@@ -114,6 +117,7 @@
         google,
         center: { lat: input.latitude, lng: input.longitude },
         title: mapLabel("position"),
+        placeTitle: mapLabel("place"),
         onSelect: showDetails,
       }).catch(() => {
         mapPromise = null;
