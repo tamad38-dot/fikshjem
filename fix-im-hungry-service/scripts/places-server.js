@@ -97,6 +97,7 @@ const server = http.createServer(async (req, res) => {
         __dirname,
         "../public/google/nearby.html",
       ),
+      "/google/map.js": path.resolve(__dirname, "../public/google/map.js"),
       "/google/panel.js": path.resolve(__dirname, "../public/google/panel.js"),
       "/google/plan.js": path.resolve(__dirname, "../src/google-plan.js"),
     };

@@ -75,6 +75,17 @@
         margin-top: 12px;
         width: 100%;
       }
+      #map {
+        height: 420px;
+        width: 100%;
+        border-radius: 16px;
+        overflow: hidden;
+        background: #132936;
+      }
+      #map-hint,
+      #map-error {
+        font-size: 13px;
+      }
       #saved-list {
         display: flex;
         gap: 8px;
@@ -107,6 +118,12 @@
     <div id="saved-list"></div>
     <div id="search"></div>
     <div id="cards"></div>
+    <section id="map-section" hidden>
+      <div id="map" role="region" aria-label="Google Maps"></div>
+      <p id="map-hint"></p>
+      <p id="map-error" role="alert" hidden></p>
+      <button id="map-retry" class="secondary" hidden></button>
+    </section>
     <section id="selected" hidden>
       <button id="back" class="secondary"></button>
       <p id="distance"></p>
@@ -126,6 +143,7 @@
       <a id="privacy" target="_blank" rel="noopener noreferrer"></a>
     </footer>
     <script src="./plan.js"></script>
+    <script src="./map.js"></script>
     <script src="./panel.js"></script>
   </body>
 </html>

@@ -1,5 +1,6 @@
 /* Google content stays inside Google's unmodified Essentials UI components.
-   No Places REST calls, review scraping, Maps JS map, Routes or paid AI calls. */
+   No Places REST calls, review scraping, Routes or paid AI calls.
+   The map is created once, only when the map tab is opened. */
 (async function () {
   const core = window.FixGooglePlan;
   const element = (id) => document.getElementById(id);
@@ -15,7 +16,8 @@
     searchStatus,
     resultCards = [],
     searchTimer,
-    detailsTimer;
+    detailsTimer,
+    mapPromise;
   function status(value) {
     element("status").textContent = value;
   }
@@ -34,8 +36,12 @@
   }
   function visibility() {
     element("search").hidden =
-      view === "saved" || detailsOpen || resultCards.length > 0;
-    element("cards").hidden = view === "saved" || detailsOpen;
+      view === "saved" ||
+      view === "map" ||
+      detailsOpen ||
+      resultCards.length > 0;
+    element("cards").hidden = view === "saved" || view === "map" || detailsOpen;
+    element("map-section").hidden = view !== "map" || detailsOpen;
     element("saved-list").hidden = detailsOpen;
     element("selected").hidden = !detailsOpen;
   }
@@ -69,6 +75,58 @@
     visibility();
     if (view !== "saved" && !searchElement) showSearch();
     else if (view !== "saved") status(searchStatus || input.labels.loading);
+    if (view === "map") void showMap();
+  }
+  function mapLabel(key) {
+    const labels = {
+      nb: {
+        position: "Din omtrentlige posisjon",
+        hint: "Trykk på en markør for bilder og detaljer. Posisjonen på kartet er omtrentlig.",
+        retry: "Prøv kartet igjen",
+        error:
+          "Kartet kunne ikke lastes. Restaurantlisten og GPS-posisjonen er fortsatt tilgjengelige.",
+      },
+      tr: {
+        position: "Yaklaşık konumun",
+        hint: "Fotoğraf ve detaylar için bir işarete dokun. Haritadaki konum yaklaşık gösterilir.",
+        retry: "Haritayı yeniden dene",
+        error:
+          "Harita yüklenemedi. Restoran listesi ve GPS konumun hâlâ kullanılabilir.",
+      },
+      en: {
+        position: "Your approximate location",
+        hint: "Tap a marker for photos and details. Your location on the map is approximate.",
+        retry: "Retry map",
+        error:
+          "The map could not load. The restaurant list and GPS position are still available.",
+      },
+    };
+    return (labels[input.locale] || labels.en)[key];
+  }
+  async function showMap() {
+    if (!mapPromise) {
+      element("map-hint").textContent = mapLabel("hint");
+      element("map-retry").textContent = mapLabel("retry");
+      element("map-error").hidden = true;
+      mapPromise = window.FixGoogleMap.create({
+        host: element("map"),
+        google,
+        center: { lat: input.latitude, lng: input.longitude },
+        title: mapLabel("position"),
+        onSelect: showDetails,
+      }).catch(() => {
+        mapPromise = null;
+        element("map-error").textContent = mapLabel("error");
+        element("map-error").hidden = false;
+        element("map-retry").hidden = false;
+        return null;
+      });
+    }
+    const controller = await mapPromise;
+    if (controller && view === "map" && !detailsOpen) {
+      controller.update(searchElement?.places || []);
+      element("map-retry").hidden = true;
+    }
   }
   function selected(place) {
     const loc = place?.location;
@@ -94,6 +152,7 @@
     send({ type: "fix-google-focus" });
     if (chosen?.id === id && detailsElement?.place?.id === id) {
       updateFavorite();
+      send(chosen);
       return;
     }
     chosen = null;
@@ -168,7 +227,22 @@
       textQuery: input.query,
       locationRestriction: input.bounds,
       includedType: input.placeType || "restaurant",
-      useStrictTypeFiltering: input.cuisine !== "pastry",
+      // Food such as waffles or breakfast is commonly served by cafes/bakeries.
+      // Restrict the region and food query, not an incorrectly narrow venue type.
+      useStrictTypeFiltering: ![
+        "pastry",
+        "cake",
+        "waffle",
+        "crepe",
+        "baklava",
+        "dessert",
+        "chocolate",
+        "sandwich",
+        "salad",
+        "soup",
+        "breakfast",
+        "brunch",
+      ].includes(input.cuisine),
       isOpenNow: input.openOnly,
       maxResultCount: 5,
       ...(input.priceLevels.length ? { priceLevels: input.priceLevels } : {}),
@@ -177,6 +251,7 @@
     searchElement.addEventListener("gmp-load", () => {
       clearTimeout(searchTimer);
       renderCards();
+      if (view === "map") void showMap();
       searchStatus = searchElement.places?.length
         ? input.labels.results
         : input.labels.noResults;
@@ -213,6 +288,7 @@
     element("back").textContent =
       input.labels.back ||
       (input.locale === "nb" ? "Tilbake til listen" : "Back to list");
+    element("map-retry").addEventListener("click", () => void showMap());
     element("back").addEventListener("click", () => {
       detailsOpen = false;
       setView(view);
@@ -317,7 +393,7 @@
           ? data.saved.filter(core.validSavedId)
           : [];
         updateFavorite();
-        setView(data.view === "saved" ? "saved" : "discover");
+        setView(["saved", "map"].includes(data.view) ? data.view : "discover");
       }
       if (
         data?.type === "fix-google-distance" &&
