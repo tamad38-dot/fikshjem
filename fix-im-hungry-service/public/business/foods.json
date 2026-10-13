@@ -1,0 +1,584 @@
+{
+  "nb": [
+    {
+      "id": "kebab",
+      "label": "Döner og kebab"
+    },
+    {
+      "id": "sushi",
+      "label": "Sushi"
+    },
+    {
+      "id": "steak",
+      "label": "Biff"
+    },
+    {
+      "id": "pizza",
+      "label": "Pizza"
+    },
+    {
+      "id": "burger",
+      "label": "Burger"
+    },
+    {
+      "id": "vegan",
+      "label": "Plantebasert"
+    },
+    {
+      "id": "seafood",
+      "label": "Sjømat"
+    },
+    {
+      "id": "pastry",
+      "label": "Søtt og bakst"
+    },
+    {
+      "id": "chicken",
+      "label": "Kylling"
+    },
+    {
+      "id": "pasta",
+      "label": "Pasta"
+    },
+    {
+      "id": "ramen",
+      "label": "Ramen"
+    },
+    {
+      "id": "noodles",
+      "label": "Nudler"
+    },
+    {
+      "id": "dumplings",
+      "label": "Dumplings og mantı"
+    },
+    {
+      "id": "tacos",
+      "label": "Taco"
+    },
+    {
+      "id": "sandwich",
+      "label": "Smørbrød"
+    },
+    {
+      "id": "salad",
+      "label": "Salat"
+    },
+    {
+      "id": "soup",
+      "label": "Suppe"
+    },
+    {
+      "id": "vegetarian",
+      "label": "Vegetarisk"
+    },
+    {
+      "id": "breakfast",
+      "label": "Frokost"
+    },
+    {
+      "id": "brunch",
+      "label": "Brunsj"
+    },
+    {
+      "id": "icecream",
+      "label": "Iskrem"
+    },
+    {
+      "id": "coffee",
+      "label": "Kaffe"
+    },
+    {
+      "id": "turkish",
+      "label": "Tyrkisk"
+    },
+    {
+      "id": "italian",
+      "label": "Italiensk"
+    },
+    {
+      "id": "japanese",
+      "label": "Japansk"
+    },
+    {
+      "id": "chinese",
+      "label": "Kinesisk"
+    },
+    {
+      "id": "indian",
+      "label": "Indisk"
+    },
+    {
+      "id": "thai",
+      "label": "Thailandsk"
+    },
+    {
+      "id": "korean",
+      "label": "Koreansk"
+    },
+    {
+      "id": "vietnamese",
+      "label": "Vietnamesisk"
+    },
+    {
+      "id": "mexican",
+      "label": "Meksikansk"
+    },
+    {
+      "id": "lebanese",
+      "label": "Libanesisk"
+    },
+    {
+      "id": "greek",
+      "label": "Gresk"
+    },
+    {
+      "id": "mediterranean",
+      "label": "Middelhavsmat"
+    },
+    {
+      "id": "norwegian",
+      "label": "Norsk"
+    },
+    {
+      "id": "french",
+      "label": "Fransk"
+    },
+    {
+      "id": "spanish",
+      "label": "Spansk"
+    },
+    {
+      "id": "american",
+      "label": "Amerikansk"
+    },
+    {
+      "id": "dessert",
+      "label": "Desserter"
+    },
+    {
+      "id": "cake",
+      "label": "Kaker"
+    },
+    {
+      "id": "waffle",
+      "label": "Vafler"
+    },
+    {
+      "id": "crepe",
+      "label": "Pannekaker"
+    },
+    {
+      "id": "donut",
+      "label": "Donuts"
+    },
+    {
+      "id": "chocolate",
+      "label": "Sjokolade"
+    },
+    {
+      "id": "baklava",
+      "label": "Baklava"
+    },
+    {
+      "id": "tea",
+      "label": "Te"
+    },
+    {
+      "id": "juice",
+      "label": "Juice og smoothie"
+    },
+    {
+      "id": "cafeteria",
+      "label": "Kafeteria"
+    }
+  ],
+  "tr": [
+    {
+      "id": "kebab",
+      "label": "Döner & Kebap"
+    },
+    {
+      "id": "sushi",
+      "label": "Suşi"
+    },
+    {
+      "id": "steak",
+      "label": "Biftek"
+    },
+    {
+      "id": "pizza",
+      "label": "Pizza"
+    },
+    {
+      "id": "burger",
+      "label": "Burger"
+    },
+    {
+      "id": "vegan",
+      "label": "Bitkisel"
+    },
+    {
+      "id": "seafood",
+      "label": "Deniz ürünleri"
+    },
+    {
+      "id": "pastry",
+      "label": "Tatlı & Fırın"
+    },
+    {
+      "id": "chicken",
+      "label": "Tavuk"
+    },
+    {
+      "id": "pasta",
+      "label": "Makarna"
+    },
+    {
+      "id": "ramen",
+      "label": "Ramen"
+    },
+    {
+      "id": "noodles",
+      "label": "Noodle"
+    },
+    {
+      "id": "dumplings",
+      "label": "Mantı ve dumpling"
+    },
+    {
+      "id": "tacos",
+      "label": "Taco"
+    },
+    {
+      "id": "sandwich",
+      "label": "Sandviç"
+    },
+    {
+      "id": "salad",
+      "label": "Salata"
+    },
+    {
+      "id": "soup",
+      "label": "Çorba"
+    },
+    {
+      "id": "vegetarian",
+      "label": "Vejetaryen"
+    },
+    {
+      "id": "breakfast",
+      "label": "Kahvaltı"
+    },
+    {
+      "id": "brunch",
+      "label": "Brunch"
+    },
+    {
+      "id": "icecream",
+      "label": "Dondurma"
+    },
+    {
+      "id": "coffee",
+      "label": "Kahve"
+    },
+    {
+      "id": "turkish",
+      "label": "Türk mutfağı"
+    },
+    {
+      "id": "italian",
+      "label": "İtalyan mutfağı"
+    },
+    {
+      "id": "japanese",
+      "label": "Japon mutfağı"
+    },
+    {
+      "id": "chinese",
+      "label": "Çin mutfağı"
+    },
+    {
+      "id": "indian",
+      "label": "Hint mutfağı"
+    },
+    {
+      "id": "thai",
+      "label": "Tayland mutfağı"
+    },
+    {
+      "id": "korean",
+      "label": "Kore mutfağı"
+    },
+    {
+      "id": "vietnamese",
+      "label": "Vietnam mutfağı"
+    },
+    {
+      "id": "mexican",
+      "label": "Meksika mutfağı"
+    },
+    {
+      "id": "lebanese",
+      "label": "Lübnan mutfağı"
+    },
+    {
+      "id": "greek",
+      "label": "Yunan mutfağı"
+    },
+    {
+      "id": "mediterranean",
+      "label": "Akdeniz mutfağı"
+    },
+    {
+      "id": "norwegian",
+      "label": "Norveç mutfağı"
+    },
+    {
+      "id": "french",
+      "label": "Fransız mutfağı"
+    },
+    {
+      "id": "spanish",
+      "label": "İspanyol mutfağı"
+    },
+    {
+      "id": "american",
+      "label": "Amerikan mutfağı"
+    },
+    {
+      "id": "dessert",
+      "label": "Tatlılar"
+    },
+    {
+      "id": "cake",
+      "label": "Pasta & Kek"
+    },
+    {
+      "id": "waffle",
+      "label": "Waffle"
+    },
+    {
+      "id": "crepe",
+      "label": "Krep"
+    },
+    {
+      "id": "donut",
+      "label": "Donut"
+    },
+    {
+      "id": "chocolate",
+      "label": "Çikolata"
+    },
+    {
+      "id": "baklava",
+      "label": "Baklava"
+    },
+    {
+      "id": "tea",
+      "label": "Çay"
+    },
+    {
+      "id": "juice",
+      "label": "Meyve suyu & Smoothie"
+    },
+    {
+      "id": "cafeteria",
+      "label": "Kafeterya"
+    }
+  ],
+  "en": [
+    {
+      "id": "kebab",
+      "label": "Döner & kebab"
+    },
+    {
+      "id": "sushi",
+      "label": "Sushi"
+    },
+    {
+      "id": "steak",
+      "label": "Steak"
+    },
+    {
+      "id": "pizza",
+      "label": "Pizza"
+    },
+    {
+      "id": "burger",
+      "label": "Burger"
+    },
+    {
+      "id": "vegan",
+      "label": "Plant-based"
+    },
+    {
+      "id": "seafood",
+      "label": "Seafood"
+    },
+    {
+      "id": "pastry",
+      "label": "Sweets & bakery"
+    },
+    {
+      "id": "chicken",
+      "label": "Chicken"
+    },
+    {
+      "id": "pasta",
+      "label": "Pasta"
+    },
+    {
+      "id": "ramen",
+      "label": "Ramen"
+    },
+    {
+      "id": "noodles",
+      "label": "Noodles"
+    },
+    {
+      "id": "dumplings",
+      "label": "Dumplings & mantı"
+    },
+    {
+      "id": "tacos",
+      "label": "Tacos"
+    },
+    {
+      "id": "sandwich",
+      "label": "Sandwiches"
+    },
+    {
+      "id": "salad",
+      "label": "Salads"
+    },
+    {
+      "id": "soup",
+      "label": "Soup"
+    },
+    {
+      "id": "vegetarian",
+      "label": "Vegetarian"
+    },
+    {
+      "id": "breakfast",
+      "label": "Breakfast"
+    },
+    {
+      "id": "brunch",
+      "label": "Brunch"
+    },
+    {
+      "id": "icecream",
+      "label": "Ice cream"
+    },
+    {
+      "id": "coffee",
+      "label": "Coffee"
+    },
+    {
+      "id": "turkish",
+      "label": "Turkish"
+    },
+    {
+      "id": "italian",
+      "label": "Italian"
+    },
+    {
+      "id": "japanese",
+      "label": "Japanese"
+    },
+    {
+      "id": "chinese",
+      "label": "Chinese"
+    },
+    {
+      "id": "indian",
+      "label": "Indian"
+    },
+    {
+      "id": "thai",
+      "label": "Thai"
+    },
+    {
+      "id": "korean",
+      "label": "Korean"
+    },
+    {
+      "id": "vietnamese",
+      "label": "Vietnamese"
+    },
+    {
+      "id": "mexican",
+      "label": "Mexican"
+    },
+    {
+      "id": "lebanese",
+      "label": "Lebanese"
+    },
+    {
+      "id": "greek",
+      "label": "Greek"
+    },
+    {
+      "id": "mediterranean",
+      "label": "Mediterranean"
+    },
+    {
+      "id": "norwegian",
+      "label": "Norwegian"
+    },
+    {
+      "id": "french",
+      "label": "French"
+    },
+    {
+      "id": "spanish",
+      "label": "Spanish"
+    },
+    {
+      "id": "american",
+      "label": "American"
+    },
+    {
+      "id": "dessert",
+      "label": "Desserts"
+    },
+    {
+      "id": "cake",
+      "label": "Cakes"
+    },
+    {
+      "id": "waffle",
+      "label": "Waffles"
+    },
+    {
+      "id": "crepe",
+      "label": "Crepes"
+    },
+    {
+      "id": "donut",
+      "label": "Donuts"
+    },
+    {
+      "id": "chocolate",
+      "label": "Chocolate"
+    },
+    {
+      "id": "baklava",
+      "label": "Baklava"
+    },
+    {
+      "id": "tea",
+      "label": "Tea"
+    },
+    {
+      "id": "juice",
+      "label": "Juice & smoothies"
+    },
+    {
+      "id": "cafeteria",
+      "label": "Cafeteria"
+    }
+  ]
+}

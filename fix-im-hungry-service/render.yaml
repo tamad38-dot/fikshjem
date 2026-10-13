@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: fix-im-hungry-api
+    runtime: node
+    region: frankfurt
+    plan: free
+    rootDir: fix-im-hungry-service
+    buildCommand: node --check scripts/places-server.js
+    startCommand: node scripts/places-server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 24.19.0
+      - key: FIX_BIND
+        value: 0.0.0.0
+      - key: FIX_COMPANION_PORT
+        value: "0"
+      - key: FIX_GOOGLE_ENABLED
+        value: "false"

@@ -1,0 +1,273 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #071722;
+  color: #f5f3ed;
+  font:
+    16px/1.6 system-ui,
+    -apple-system,
+    sans-serif;
+}
+main {
+  max-width: 650px;
+  margin: auto;
+  padding: 24px 22px 60px;
+}
+header,
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+header a {
+  font:
+    32px Georgia,
+    serif;
+  text-decoration: none;
+}
+header span {
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: #98a8b2;
+}
+a,
+small {
+  color: #e9bf77;
+}
+small {
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+h1 {
+  font:
+    38px/1.15 Georgia,
+    serif;
+  margin: 14px 0;
+}
+h2 {
+  font-size: 20px;
+}
+.intro {
+  margin: 40px 0 24px;
+}
+.intro p,
+.muted {
+  color: #a5b3bd;
+  font-size: 14px;
+}
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+  border: 1px solid #344854;
+  border-radius: 24px;
+  padding: 12px 18px;
+  background: #132936;
+  color: inherit;
+  min-height: 44px;
+}
+button:disabled {
+  cursor: wait;
+  opacity: 0.5;
+}
+nav {
+  display: flex;
+  gap: 10px;
+}
+nav button {
+  flex: 1;
+}
+nav button.active,
+.chips input:checked + span {
+  border-color: #e9bf77;
+  color: #e9bf77;
+  background: #34392f;
+}
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.tabs button.active {
+  color: #e9bf77;
+  border-color: #e9bf77;
+}
+section#auth,
+section#dashboard,
+section#recovery {
+  border: 1px solid #243744;
+  border-radius: 24px;
+  background: #0d202d;
+  padding: 22px;
+}
+label {
+  display: block;
+  margin: 16px 0;
+  font-size: 14px;
+}
+label > span {
+  display: block;
+  margin-bottom: 6px;
+  color: #c4ced2;
+}
+input,
+textarea,
+select {
+  display: block;
+  background: #071722;
+  border: 1px solid #344854;
+  border-radius: 12px;
+  color: #f5f3ed;
+  padding: 12px;
+  width: 100%;
+  max-width: 100%;
+}
+input:focus,
+textarea:focus,
+button:focus-visible {
+  outline: 2px solid #e9bf77;
+  outline-offset: 3px;
+}
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #e9bf77;
+}
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.check input {
+  flex-shrink: 0;
+}
+.primary {
+  background: #e9bf77;
+  color: #071722;
+  font-weight: 650;
+  width: 100%;
+  border: 0;
+  margin: 12px 0;
+}
+.text {
+  border: 0;
+  background: none;
+  color: #e9bf77;
+  text-decoration: underline;
+  padding-left: 0;
+}
+.danger {
+  color: #f0aa9c;
+  margin-top: 12px;
+}
+.legal {
+  font-size: 12px;
+}
+.notice {
+  background: #192f34;
+  border: 1px solid #3a443f;
+  border-radius: 16px;
+  padding: 16px;
+  color: #c6cdca;
+  font-size: 13px;
+}
+#status {
+  white-space: pre-line;
+  color: #e9bf77;
+}
+#status.error {
+  color: #f0aa9c;
+}
+fieldset {
+  border: 1px solid #344854;
+  border-radius: 14px;
+  padding: 12px;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 240px;
+  overflow: auto;
+}
+.chips label {
+  margin: 0;
+  position: relative;
+}
+.chips span {
+  border: 1px solid #344854;
+  border-radius: 20px;
+  padding: 8px 12px;
+  font-size: 12px;
+  margin: 0;
+}
+.chips input {
+  opacity: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+}
+.chips input:focus-visible + span {
+  outline: 2px solid #e9bf77;
+}
+.upload {
+  padding: 12px;
+  border: 1px dashed #e9bf77;
+  border-radius: 16px;
+}
+.upload input {
+  font-size: 12px;
+}
+#gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+#gallery article {
+  min-width: 0;
+}
+#gallery img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+#gallery p {
+  font-size: 11px;
+  color: #a5b3bd;
+}
+footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 28px;
+  color: #98a8b2;
+  font-size: 12px;
+}
+hr {
+  border: 0;
+  border-top: 1px solid #243744;
+  margin: 24px 0;
+}
+[hidden] {
+  display: none !important;
+}
+@media (max-width: 400px) {
+  h1 {
+    font-size: 32px;
+  }
+  section#auth,
+  section#dashboard {
+    padding: 16px;
+  }
+  header span {
+    display: none;
+  }
+}
