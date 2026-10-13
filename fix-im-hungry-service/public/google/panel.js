@@ -14,6 +14,7 @@
     detailsRequest,
     detailsElement,
     searchStatus,
+    searchComplete = false,
     resultCards = [],
     searchTimer,
     detailsTimer,
@@ -37,7 +38,7 @@
   function visibility() {
     element("search").hidden =
       view === "saved" ||
-      view === "map" ||
+      (view === "map" && searchComplete) ||
       detailsOpen ||
       resultCards.length > 0;
     element("cards").hidden = view === "saved" || view === "map" || detailsOpen;
@@ -220,6 +221,7 @@
     status(input.labels.loading);
     clearTimeout(searchTimer);
     searchTimer = setTimeout(failed, 30000);
+    searchComplete = false;
     searchElement = new widgets.PlaceSearchElement();
     searchElement.setAttribute("selectable", "");
     const content = document.createElement("gmp-place-all-content");
@@ -250,6 +252,7 @@
     });
     searchElement.addEventListener("gmp-load", () => {
       clearTimeout(searchTimer);
+      searchComplete = true;
       renderCards();
       if (view === "map") void showMap();
       searchStatus = searchElement.places?.length

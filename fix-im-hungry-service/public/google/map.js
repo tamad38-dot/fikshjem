@@ -36,7 +36,7 @@
         background: "#63b6ff",
         borderColor: "#ffffff",
         glyphColor: "#ffffff",
-      }).element,
+      }),
     });
     let markers = [],
       lastKey = null;
@@ -62,7 +62,7 @@
             background: "#e9bf77",
             borderColor: "#071722",
             glyphColor: "#071722",
-          }).element,
+          }),
         });
         marker.addEventListener("gmp-click", () => onSelect(p.id));
         bounds.extend(p.location);
