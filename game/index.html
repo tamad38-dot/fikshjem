@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0b1730">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="description" content="Kat Kat: Temel kaz, beton dök, vinçle kat kat yüksel. Yanlış yerleştirirsen bina yıkılır. 10.000 kata ulaşabilir misin?">
+<title>Kat Kat — Temelden Zirveye</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="c" aria-label="Oyun alanı"></canvas>
+
+<!-- ========== HUD ========== -->
+<div id="hud" class="hidden">
+  <div class="hud-tl glass">
+    <div class="floor-row"><span id="hFloor" class="floor-num">0</span><span id="hFloorLbl" class="floor-lbl">KAT</span></div>
+    <div class="sub-row"><span id="hMeters">0 m</span><i></i><span id="hScore">0</span></div>
+  </div>
+
+  <div id="hMat" class="hud-mat glass">
+    <span id="matSwatch" class="swatch"></span>
+    <span class="mat-txt"><b id="matName">—</b><small id="matTier">—</small></span>
+  </div>
+
+  <div class="hud-tr">
+    <button id="btnPause" class="icon-btn glass" aria-label="Duraklat"><svg viewBox="0 0 24 24"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></button>
+    <button id="btnSound" class="icon-btn glass" aria-label="Ses"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9zM16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" class="stroke"/></svg></button>
+  </div>
+
+  <div id="phaseBar" class="phase glass hidden">
+    <div class="phase-top"><b id="phaseLbl">Kazı</b><span id="phasePct">0%</span></div>
+    <div class="bar"><div id="phaseFill"></div></div>
+  </div>
+
+  <div class="hud-prog" id="hProg" aria-hidden="true">
+    <div class="prog-track"><div id="progFill"></div></div>
+    <span class="prog-top">10 000</span><span class="prog-bot">0</span>
+  </div>
+
+  <div class="hud-bl">
+    <div id="hWind" class="wind glass"><svg id="windArrow" viewBox="0 0 24 24"><path d="M3 12h15M13 6l6 6-6 6" class="stroke"/></svg><span><small id="windLbl">Rüzgar</small><b id="windVal">0</b></span></div>
+  </div>
+
+  <div id="hStab" class="stab glass">
+    <div class="stab-top"><small id="stabLbl">Denge</small><b id="stabTxt">—</b></div>
+    <div class="stab-bar"><div class="stab-zone"></div><div id="stabMark"></div></div>
+  </div>
+
+  <div class="hud-br">
+    <div id="hLives" class="lives glass" aria-label="Haklar"></div>
+    <button id="btnRoof" class="btn small roof hidden">Çatıyı Kapat</button>
+  </div>
+
+  <div id="hint" class="hint"></div>
+</div>
+
+<div id="banner" class="banner"><b id="bnT"></b><span id="bnS"></span></div>
+
+<!-- ========== EKRANLAR ========== -->
+<section id="scMenu" class="screen">
+  <div class="card menu-card">
+    <div class="logo-mark" aria-hidden="true">
+      <svg viewBox="0 0 120 120"><defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd25a"/><stop offset="1" stop-color="#ff9a1f"/></linearGradient></defs>
+      <rect x="22" y="78" width="76" height="20" rx="3" fill="url(#lg)"/><rect x="30" y="56" width="60" height="20" rx="3" fill="#e9eef7"/><rect x="38" y="34" width="44" height="20" rx="3" fill="#b4492f"/><path d="M34 34 60 12l26 22z" fill="#2d3f63"/></svg>
+    </div>
+    <h1 id="mTitle">KAT KAT</h1>
+    <p id="mSub" class="lead">Temelden Zirveye · 10.000 Katlı Ev İnşaatı</p>
+    <div class="menu-btns">
+      <button id="btnPlay" class="btn big">Yeni İnşaat</button>
+      <button id="btnCont" class="btn big alt hidden">Devam Et</button>
+      <button id="btnHow" class="btn ghost">Nasıl Oynanır</button>
+      <button id="btnSet" class="btn ghost">Ayarlar</button>
+    </div>
+    <p id="mBest" class="best-line"></p>
+    <p class="foot">© 2026 Fix One · MIT Lisansı</p>
+  </div>
+</section>
+
+<section id="scHow" class="screen hidden">
+  <div class="card">
+    <h2 id="hwTitle">Nasıl Oynanır</h2>
+    <ol id="hwList" class="how"></ol>
+    <button id="btnHowClose" class="btn">Tamam</button>
+  </div>
+</section>
+
+<section id="scSet" class="screen hidden">
+  <div class="card">
+    <h2 id="stTitle">Ayarlar</h2>
+    <label class="row"><span id="stSnd">Ses</span><button id="tgSound" class="toggle" role="switch"></button></label>
+    <label class="row"><span id="stGuide">Rehber çizgisi</span><button id="tgGuide" class="toggle" role="switch"></button></label>
+    <label class="row"><span id="stLang">Dil</span><button id="tgLang" class="btn small">Türkçe</button></label>
+    <button id="btnSetClose" class="btn">Tamam</button>
+  </div>
+</section>
+
+<section id="scPause" class="screen hidden">
+  <div class="card">
+    <h2 id="psTitle">Duraklatıldı</h2>
+    <div class="menu-btns">
+      <button id="btnResume" class="btn big">Devam</button>
+      <button id="btnPauseSet" class="btn ghost">Ayarlar</button>
+      <button id="btnPauseMenu" class="btn ghost">Ana Menü</button>
+    </div>
+  </div>
+</section>
+
+<section id="scOver" class="screen hidden">
+  <div class="card over">
+    <div id="ovBadge" class="badge">YIKILDI</div>
+    <h2 id="ovTitle">Bina yıkıldı!</h2>
+    <p id="ovMsg" class="lead"></p>
+    <div class="stats" id="ovStats"></div>
+    <div class="menu-btns">
+      <button id="btnOvCont" class="btn big">Kontrol noktasından devam</button>
+      <button id="btnOvNew" class="btn alt">Yeni İnşaat</button>
+      <button id="btnOvMenu" class="btn ghost">Ana Menü</button>
+    </div>
+  </div>
+</section>
+
+<section id="scWin" class="screen hidden">
+  <div class="card over">
+    <div id="wnBadge" class="badge gold">TAMAMLANDI</div>
+    <h2 id="wnTitle">Ev tamamlandı!</h2>
+    <p id="wnMsg" class="lead"></p>
+    <div class="stats" id="wnStats"></div>
+    <div class="menu-btns">
+      <button id="btnWnNew" class="btn big">Yeni İnşaat</button>
+      <button id="btnWnMenu" class="btn ghost">Ana Menü</button>
+    </div>
+  </div>
+</section>
+
+<noscript><div class="noscript">Bu oyun için JavaScript gerekli.</div></noscript>
+<script src="core.js"></script>
+<script src="art.js"></script>
+<script src="render.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
